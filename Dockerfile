@@ -1,5 +1,5 @@
 # Use official Python base image
-FROM arm64v8/python:3.12
+FROM --platform=linux/arm64/v8 arm64v8/python:3.11
 
 # Set working directory
 WORKDIR /app
