@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Route for the home page
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Hi there from Azure Container Instance app!'
 
 # Run the application on port 80
 if __name__ == '__main__':
