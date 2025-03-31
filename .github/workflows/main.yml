@@ -33,11 +33,10 @@ jobs:
         run: |
           az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }}
 
-      - name: Build and tag multi-architecture Docker image
+      - name: Build and tag Docker image for ARM64
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/hello-world:latest --push .
+          docker buildx build --platform linux/arm64 -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/hello-world:arm64 --push .
 
-      - name: Push Docker image to ACR
+      - name: Confirm image pushed to ACR
         run: |
-          # This step is not necessary anymore because we already used the `--push` flag in the build step
-          echo "Image has been pushed to ACR"
+          echo "Image has been pushed to ACR for ARM64 architecture"
