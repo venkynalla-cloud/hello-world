@@ -6,8 +6,8 @@ on:
       - main  # Runs on push to main branch
 
 permissions:
-      id-token: write
-      contents: read
+  id-token: write
+  contents: read
 
 jobs:
   build-and-push:
@@ -16,6 +16,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
 
       - name: Log in to Azure
         uses: azure/login@v1
@@ -28,10 +33,11 @@ jobs:
         run: |
           az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }}
 
-      - name: Build and tag Docker image
+      - name: Build and tag multi-architecture Docker image
         run: |
-          docker build -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/hello-world:latest .
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/hello-world:latest --push .
 
       - name: Push Docker image to ACR
         run: |
-          docker push ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/hello-world:latest
+          # This step is not necessary anymore because we already used the `--push` flag in the build step
+          echo "Image has been pushed to ACR"
